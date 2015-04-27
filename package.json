@@ -2,7 +2,7 @@
   "name": "react-simple-colorpicker",
   "version": "1.0.1",
   "description": "Colorpicker for React",
-  "main": "pkg/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -30,8 +30,10 @@
   },
   "homepage": "https://github.com/WickyNilliams/react-simple-colorpicker",
   "dependencies": {
-    "colr": "^1.0.8",
-    "react": "^0.13.1"
+    "colr": "^1.0.8"
+  },
+  "peerDependencies": {
+    "react": "^0.13.2"
   },
   "devDependencies": {
     "envify": "^3.0.0",
