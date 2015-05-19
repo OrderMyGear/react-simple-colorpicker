@@ -53,7 +53,7 @@ var ColorPicker = React.createClass({displayName: "ColorPicker",
       React.createElement("div", {className: "colorpicker"}, 
         React.createElement("div", {className: "hue-slider"}, 
           React.createElement(Slider, {
-            vertical: true, 
+            vertical: this.props.vertical, 
             value: this.state.hsv.h, 
             max: 360, 
             onChange: this.handleHueChange}

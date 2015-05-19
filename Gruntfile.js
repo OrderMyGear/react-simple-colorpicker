@@ -39,6 +39,11 @@ module.exports = function(grunt) {
         transform: [
           "reactify",
           "envify"
+        ],
+        exclude: [
+          "react",
+          "react/lib/cx",
+          "react/lib/ReactComponentWithPureRenderMixin"
         ]
       },
       dev: {

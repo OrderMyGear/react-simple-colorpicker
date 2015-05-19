@@ -48,7 +48,7 @@ var Slider = React.createClass({displayName: "Slider",
     var classes = cx({
       slider: true,
       vertical: this.props.vertical,
-      horizontal: ! this.props.vertical
+      horizontal: !this.props.vertical
     });
 
     return (
