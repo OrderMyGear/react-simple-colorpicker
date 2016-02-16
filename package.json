@@ -1,10 +1,11 @@
 {
-  "name": "react-simple-colorpicker",
-  "version": "1.0.1",
+  "name": "@ordermygear/react-simple-colorpicker",
+  "version": "1.2.0",
   "description": "Colorpicker for React",
   "main": "pkg/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "grunt"
   },
   "repository": {
     "type": "git",
@@ -30,13 +31,17 @@
   },
   "homepage": "https://github.com/WickyNilliams/react-simple-colorpicker",
   "dependencies": {
-    "colr": "^1.0.8"
+    "classnames": "^2.1.3",
+    "colr": "^1.0.8",
+    "pure-color": "^1.0.0"
   },
   "peerDependencies": {
-    "react": "^0.13.2"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "browserify-shim": {
-    "react": "global:React"
+    "react": "global:React",
+    "react-dom": "global:React"
   },
   "devDependencies": {
     "envify": "^3.0.0",
@@ -48,5 +53,9 @@
     "grunt-env": "^0.4.1",
     "grunt-react": "^0.10.0",
     "reactify": "^0.17.1"
+  },
+  "publishConfig": {
+    "registry": "https://npm.omg.sh/",
+    "access": "restricted"
   }
 }
