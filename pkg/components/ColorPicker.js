@@ -1,104 +1,120 @@
-/**
- * @jsx React.DOM
- */
-
 var React = require("react");
 var PureRenderMixin = require("react/lib/ReactComponentWithPureRenderMixin");
-var cx = require("react/lib/cx");
+var cx = require("classnames");
 var Map = require("./Map");
 var Slider = require("./Slider");
-var Colr = require("colr");
-
+var ColorUtils = require("../util/ColorUtils");
 
 var ColorPicker = React.createClass({displayName: "ColorPicker",
 
   mixins : [PureRenderMixin],
 
+  propTypes: {
+    color : React.PropTypes.string.isRequired,
+    onChange : React.PropTypes.func.isRequired
+  },
+
   getDefaultProps : function() {
     return {
-      color : "#000000"
+      color : "rgba(0,0,0,1)",
+      opacitySlider : false
     };
   },
 
   getInitialState: function() {
-    return this.getStateFrom(this.props.color);
+    return this.getStateFrom(this.props);
   },
 
   componentWillReceiveProps: function(nextProps) {
-    var nextColor = nextProps.color;
-    var currentColor = Colr.fromHsvObject(this.state.hsv).toHex();
+    var nextState = this.getStateFrom(nextProps);
 
-    if(nextColor.toLowerCase() !== currentColor.toLowerCase()) {
-      this.setState(this.getStateFrom(nextColor));
+    if (!ColorUtils.equals(this.state.color, nextState.color)) {
+      this.setState(nextState);
     }
   },
 
-  getStateFrom : function(color) {
-    color = Colr.fromHex(color);
+  getStateFrom : function(props) {
     return {
-      hsv : color.toHsvObject()
+      color : ColorUtils.parseToHsv(props.color)
     };
   },
 
   render: function () {
-    var luminosity = this.getLuminosity();
-    var hue = this.getBackgroundHue();
+    var classes = cx("colorpicker", { "with-opacity-slider" : this.props.opacitySlider });
 
-    var classes = cx({
-      dark: luminosity <= 0.5,
-      light: luminosity > 0.5
-    });
+    if (this.props.opacitySlider) {
+      var opacitySlider = (
+        React.createElement("div", {className: "opacity-slider"}, 
+          React.createElement(Slider, {
+            vertical: false, 
+            value: this.getAlpha(), 
+            max: 1, 
+            background: this.getBackgroundGradient(), 
+            onChange: this.handleAlphaChange}
+          )
+        )
+      );
+    }
 
     return (
-      React.createElement("div", {className: "colorpicker"}, 
+      React.createElement("div", {className: classes}, 
         React.createElement("div", {className: "hue-slider"}, 
           React.createElement(Slider, {
             vertical: this.props.vertical, 
-            value: this.state.hsv.h, 
+            value: this.state.color[0], 
             max: 360, 
             onChange: this.handleHueChange}
           )
         ), 
+        opacitySlider, 
         React.createElement(Map, {
-          x: this.state.hsv.s, 
-          y: this.state.hsv.v, 
+          x: this.state.color[1], 
+          y: this.state.color[2], 
           max: 100, 
-          className: classes, 
-          backgroundColor: hue, 
+          className: ColorUtils.isDark(this.state.color) ? "dark" : "light", 
+          backgroundColor: this.getBackgroundHue(), 
           onChange: this.handleSaturationValueChange}
         )
       )
     );
   },
 
-  getLuminosity : function() {
-    return Colr.fromHsvObject(this.state.hsv).toGrayscale() / 255;
+  getAlpha : function() {
+    return this.state.color[3] === undefined ? 1 : this.state.color[3];
+  },
+
+  getBackgroundGradient: function() {
+    var c = this.state.color;
+
+    return (
+      "linear-gradient(to right, " +
+      ColorUtils.toRgbString([c[0], c[1], c[2], 0]) + " 0%, " +
+      ColorUtils.toRgbString([c[0], c[1], c[2], 1]) + " 100%)"
+    );
   },
 
   getBackgroundHue : function() {
-    return Colr.fromHsv(this.state.hsv.h, 100, 100).toHex();
+    return ColorUtils.toRgbString([this.state.color[0], 100, 100]);
+  },
+
+  handleAlphaChange : function(alpha) {
+    var c = this.state.color;
+    this.update([c[0], c[1], c[2], alpha]);
   },
 
   handleHueChange : function(hue) {
-    this.update({
-      h : hue,
-      s : this.state.hsv.s,
-      v : this.state.hsv.v
-    });
+    var c = this.state.color;
+    this.update([hue, c[1], c[2], c[3]]);
   },
 
   handleSaturationValueChange : function(saturation, value) {
-    this.update({
-      h : this.state.hsv.h,
-      s : saturation,
-      v : value
-    });
+    var c = this.state.color;
+    this.update([c[0], saturation, value, c[3]]);
   },
 
-  update : function(hsv) {
-    var color = Colr.fromHsvObject(hsv);
-    this.props.onChange(color.toHex());
-    this.setState({ hsv : hsv });
+  update : function(color) {
+    this.props.onChange(ColorUtils.toRgbString(color));
+    this.setState({ color : color });
   }
 
 });
