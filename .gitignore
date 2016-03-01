@@ -3,3 +3,5 @@ node_modules
 /example/dist/js/*
 /example/dist/css/*
 .sass-cache
+/pkg
+npm-debug.log

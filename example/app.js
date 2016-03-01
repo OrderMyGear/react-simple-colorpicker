@@ -1,24 +1,15 @@
-/**
- * @jsx React.DOM
- */
-
 var React = require("react");
+var ReactDOM = require("react-dom");
 var ColorPicker = require("../lib/");
 var ColorSwatch = require("./ColorSwatch");
 var colors = require("./colors.json");
-
-function values(obj) {
-  return Object.keys(obj).map(function(key) {
-    return obj[key];
-  });
-}
 
 
 var App = React.createClass({
 
   getInitialState: function() {
     return {
-      colors : values(colors),
+      colors : colors,
       selected : 0
     };
   },
@@ -38,6 +29,7 @@ var App = React.createClass({
         <div className="picker picker-right">
           <ColorPicker
             color={selectedColor}
+            opacitySlider={true}
             onChange={this.handleColorChange}
           />
         </div>
@@ -57,5 +49,4 @@ var App = React.createClass({
 
 });
 
-React.initializeTouchEvents(true);
-React.render(<App />, document.body);
+ReactDOM.render(<App />, document.querySelector("#app"));
